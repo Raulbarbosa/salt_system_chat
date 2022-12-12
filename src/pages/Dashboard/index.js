@@ -14,8 +14,6 @@ export default function Dashboard() {
         username: '',
         id: ''
     });
-    // const [bot, setBot] = useState(false);
-    // const [botMessages, setBotMessages] = useState([])
     const [message, setMessage] = useState('');
     const [target, setTarget] = useState('');
     const [users, setUsers] = useState([]);
@@ -106,35 +104,7 @@ export default function Dashboard() {
         }
 
     };
-    // const sendMessageBot = async () => {
-    //     const localBotMessages = { ...botMessages };
-    //     try {
-    //         const response = await api.post("/bot",
-    //             { content: message },
-    //             {
-    //                 headers: {
-    //                     Authorization: `Bearer ${getItem('token')}`
-    //                 }
-    //             }
-    //         );
 
-    //         socket.emit("send_message", () =>
-    //             console.log('message sent')
-    //         );
-
-    //         localBotMessages.push(response.data);
-
-    //         console.log("Oi", localBotMessages);
-
-    //         setBotMessages(localBotMessages)
-
-    //     } catch (error) {
-    //         return;
-    //     } finally {
-    //         setMessage('');
-    //     }
-
-    // };
 
     const scrollToBottom = () => {
         if (!allMessagesArea.current) {
@@ -146,15 +116,9 @@ export default function Dashboard() {
 
     const talkStart = (param) => {
         setTarget('')
-        // setBot(false);
         setTarget(param)
         scrollToBottom()
     }
-
-    // const talkBot = () => {
-    //     setTarget('');
-    //     setBot(true);
-    // }
 
     const getDirectMessage = async () => {
         try {
@@ -168,7 +132,6 @@ export default function Dashboard() {
 
         } catch (error) {
             logout();
-            // console.log(error.message);
         }
     }
 
@@ -183,19 +146,6 @@ export default function Dashboard() {
             </Sc.Header>
             <Sc.MainContent>
                 <Sc.Left_side>
-                    {/* <Sc.BotTitle>
-                        <Sc.Title onClick={() => {
-                            talkBot()
-                        }}>Bot</Sc.Title>
-                        <ArrowCounterClockwise
-                            style={{
-                                position: 'absolute',
-                                right: '0rem', top: '0rem'
-                            }}
-                            size={32}
-                            onClick={() => { setBot(false) }}
-                        />
-                    </Sc.BotTitle> */}
                     <Sc.UsersTitle>
                         <Sc.Title>Usuários</Sc.Title>
                         <ArrowCounterClockwise
@@ -253,34 +203,6 @@ export default function Dashboard() {
                             </Sc.MessageAreaTextInput>
                         </>
                     }
-                    {/* {bot &&
-                        <>
-                            <Sc.MessagesAreaView>
-                                {
-                                    botMessages.map((item) => {
-                                        return (
-                                            <Sc.Message key={item.id}>
-                                                <Sc.MessageOwner>
-                                                    {item.sender_id === user.id ? user.email : 'bot'}:
-                                                </Sc.MessageOwner>
-                                                <Sc.MessageContent>
-                                                    {item}
-                                                </Sc.MessageContent>
-                                            </Sc.Message>
-                                        )
-                                    })}
-                            </Sc.MessagesAreaView>
-                            <Sc.MessageAreaTextInput>
-                                <Sc.Input
-                                    value={message}
-                                    placeholder='Digite aqui sua mensagem...'
-                                    onChange={(event) => {
-                                        setMessage(event.target.value);
-                                    }}
-                                />
-                                <Sc.ButtonSend onClick={sendMessageBot}>Enviar</Sc.ButtonSend>
-                            </Sc.MessageAreaTextInput>
-                        </>} */}
                 </Sc.Right_side>
             </Sc.MainContent>
         </Sc.Container>
