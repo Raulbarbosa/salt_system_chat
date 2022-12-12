@@ -10,7 +10,7 @@ export default function Signin() {
 
     const [error, setError] = useState(null);
     const [formSignIn, setForm] = useState({
-        username: "",
+        email: "",
         password: "",
     });
 
@@ -24,19 +24,20 @@ export default function Signin() {
 
     const handleChangeInputValueSignIn = (e) => {
         setForm({ ...formSignIn, [e.target.name]: e.target.value });
+        setError('');
     };
 
     const handleSubmitSignIn = async (e) => {
         e.preventDefault();
 
         try {
-            if (!formSignIn.username || !formSignIn.password) {
+            if (!formSignIn.email || !formSignIn.password) {
                 setError("Please fill all the fields.");
                 return;
             }
 
             const response = await api.post("/login", {
-                username: formSignIn.username,
+                email: formSignIn.email,
                 password: formSignIn.password,
             });
 
@@ -46,7 +47,7 @@ export default function Signin() {
 
             navigate("/dashboard");
         } catch (error) {
-            setError(error.message);
+            setError(error.response.data.message);
             return;
         }
     };
@@ -60,11 +61,11 @@ export default function Signin() {
                 <Sc.Form onSubmit={handleSubmitSignIn} autoComplete={"off"}>
                     <Sc.InputArea>
                         <Sc.Input
-                            name={"username"}
-                            value={formSignIn.username}
+                            name={"email"}
+                            value={formSignIn.email}
                             type={'text'}
                             onChange={handleChangeInputValueSignIn}
-                            placeholder='Username' />
+                            placeholder='email' />
                         <Sc.Input
                             name={"password"}
                             value={formSignIn.password}
@@ -72,6 +73,11 @@ export default function Signin() {
                             onChange={handleChangeInputValueSignIn}
                             placeholder='Password' />
                     </Sc.InputArea>
+                    {error &&
+                        <Sc.ErrorMessage>
+                            {error}
+                        </Sc.ErrorMessage>
+                    }
                     <Sc.Button type={'submit'}> Entrar </Sc.Button>
                 </Sc.Form>
                 <Link to={"/sign-up"}>Não possui conta? Cadastre-se</Link>

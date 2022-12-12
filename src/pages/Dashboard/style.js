@@ -68,6 +68,20 @@ export const Left_side = styled.div`
 
 `
 
+export const BotTitle = styled.div`
+    display: flex;
+    justify-content: center;
+    position: relative;
+    width: 29vw;
+`
+
+export const UsersTitle = styled.div`
+    display: flex;
+    justify-content: center;
+    position: relative;
+    width: 29vw;
+`
+
 export const Title = styled.h1`
     width: 7rem;
     text-align: center;

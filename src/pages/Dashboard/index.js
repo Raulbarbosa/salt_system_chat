@@ -14,6 +14,8 @@ export default function Dashboard() {
         username: '',
         id: ''
     });
+    // const [bot, setBot] = useState(false);
+    // const [botMessages, setBotMessages] = useState([])
     const [message, setMessage] = useState('');
     const [target, setTarget] = useState('');
     const [users, setUsers] = useState([]);
@@ -81,14 +83,9 @@ export default function Dashboard() {
         if (!target || !message) {
             return;
         }
-        const data = {
-            sender: user.username,
-            target,
-            content: message
-        }
 
         try {
-            const response = await api.post("/messages",
+            await api.post("/messages",
                 { target: target, content: message },
                 {
                     headers: {
@@ -101,14 +98,43 @@ export default function Dashboard() {
                 console.log('message sent')
             );
 
-            setMessage('');
-            getDirectMessage();
-
         } catch (error) {
             return;
+        } finally {
+            setMessage('');
+            getDirectMessage();
         }
 
     };
+    // const sendMessageBot = async () => {
+    //     const localBotMessages = { ...botMessages };
+    //     try {
+    //         const response = await api.post("/bot",
+    //             { content: message },
+    //             {
+    //                 headers: {
+    //                     Authorization: `Bearer ${getItem('token')}`
+    //                 }
+    //             }
+    //         );
+
+    //         socket.emit("send_message", () =>
+    //             console.log('message sent')
+    //         );
+
+    //         localBotMessages.push(response.data);
+
+    //         console.log("Oi", localBotMessages);
+
+    //         setBotMessages(localBotMessages)
+
+    //     } catch (error) {
+    //         return;
+    //     } finally {
+    //         setMessage('');
+    //     }
+
+    // };
 
     const scrollToBottom = () => {
         if (!allMessagesArea.current) {
@@ -118,11 +144,17 @@ export default function Dashboard() {
         }
     }
 
-    const functionteste = (username) => {
+    const talkStart = (param) => {
         setTarget('')
-        setTarget(username)
+        // setBot(false);
+        setTarget(param)
         scrollToBottom()
     }
+
+    // const talkBot = () => {
+    //     setTarget('');
+    //     setBot(true);
+    // }
 
     const getDirectMessage = async () => {
         try {
@@ -135,8 +167,8 @@ export default function Dashboard() {
             scrollToBottom()
 
         } catch (error) {
-            // logout();
-            console.log(error.message);
+            logout();
+            // console.log(error.message);
         }
     }
 
@@ -145,31 +177,46 @@ export default function Dashboard() {
             <Sc.Header>
                 <Sc.Image src={Logo} />
                 <Sc.LogoutArea>
-                    <Sc.UserName >Bem vindo, {user.username}</Sc.UserName>
+                    <Sc.UserName >Bem vindo, {user.name}</Sc.UserName>
                     <SignOut size={32} cursor={'pointer'} onClick={logout} />
                 </Sc.LogoutArea>
             </Sc.Header>
             <Sc.MainContent>
                 <Sc.Left_side>
-                    <Sc.Title>Usuários</Sc.Title>
-                    <ArrowCounterClockwise
-                        style={{
-                            position: 'absolute',
-                            right: '1rem', top: '1rem'
-                        }}
-                        size={32}
-                        onClick={() => setTarget('')}
-                    />
+                    {/* <Sc.BotTitle>
+                        <Sc.Title onClick={() => {
+                            talkBot()
+                        }}>Bot</Sc.Title>
+                        <ArrowCounterClockwise
+                            style={{
+                                position: 'absolute',
+                                right: '0rem', top: '0rem'
+                            }}
+                            size={32}
+                            onClick={() => { setBot(false) }}
+                        />
+                    </Sc.BotTitle> */}
+                    <Sc.UsersTitle>
+                        <Sc.Title>Usuários</Sc.Title>
+                        <ArrowCounterClockwise
+                            style={{
+                                position: 'absolute',
+                                right: '0rem', top: '0rem'
+                            }}
+                            size={32}
+                            onClick={() => setTarget('')}
+                        />
+                    </Sc.UsersTitle>
                     <Sc.UsersContent>
                         {users.map(item => {
-                            if (item.username === user.username) {
+                            if (item.email === user.email) {
                                 return
                             } else {
                                 return (
                                     <Sc.User
                                         key={item.id}
-                                        onClick={() => { functionteste(item.username) }}
-                                    >{item.username}
+                                        onClick={() => { talkStart(item.email) }}
+                                    >{item.email}
                                     </Sc.User>
                                 )
                             }
@@ -185,7 +232,7 @@ export default function Dashboard() {
                                         return (
                                             <Sc.Message key={item.id}>
                                                 <Sc.MessageOwner>
-                                                    {item.sender_id === user.id ? user.username : target}:
+                                                    {item.sender_id === user.id ? user.email : target}:
                                                 </Sc.MessageOwner>
                                                 <Sc.MessageContent>
                                                     {item.content}
@@ -193,7 +240,6 @@ export default function Dashboard() {
                                             </Sc.Message>
                                         )
                                     })}
-
                             </Sc.MessagesAreaView>
                             <Sc.MessageAreaTextInput>
                                 <Sc.Input
@@ -207,6 +253,34 @@ export default function Dashboard() {
                             </Sc.MessageAreaTextInput>
                         </>
                     }
+                    {/* {bot &&
+                        <>
+                            <Sc.MessagesAreaView>
+                                {
+                                    botMessages.map((item) => {
+                                        return (
+                                            <Sc.Message key={item.id}>
+                                                <Sc.MessageOwner>
+                                                    {item.sender_id === user.id ? user.email : 'bot'}:
+                                                </Sc.MessageOwner>
+                                                <Sc.MessageContent>
+                                                    {item}
+                                                </Sc.MessageContent>
+                                            </Sc.Message>
+                                        )
+                                    })}
+                            </Sc.MessagesAreaView>
+                            <Sc.MessageAreaTextInput>
+                                <Sc.Input
+                                    value={message}
+                                    placeholder='Digite aqui sua mensagem...'
+                                    onChange={(event) => {
+                                        setMessage(event.target.value);
+                                    }}
+                                />
+                                <Sc.ButtonSend onClick={sendMessageBot}>Enviar</Sc.ButtonSend>
+                            </Sc.MessageAreaTextInput>
+                        </>} */}
                 </Sc.Right_side>
             </Sc.MainContent>
         </Sc.Container>

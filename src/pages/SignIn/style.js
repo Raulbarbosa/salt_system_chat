@@ -51,6 +51,7 @@ export const Form = styled.form`
 
     width: 24rem;
     height: 32rem;
+    position: relative;
 
     background-color: #9CDADA;
 
@@ -89,8 +90,12 @@ export const InputArea = styled.div`
     flex-direction: column;
     align-items: center;
 
-    margin: 7rem;
+    margin: 2rem;
 
+`
+
+export const ErrorMessage = styled.span`
+    color: red;
 `
 
 export const Button = styled.button`
@@ -103,10 +108,12 @@ export const Button = styled.button`
     align-items: center;
     justify-content: center;
 
-    height: 4.0rem;
-    max-width: 7rem;
-    width: 7rem;
+   height: 4.0rem;
+    max-width: 10rem;
+    width: 10rem;
     padding: 0.4rem 1.2rem;
+    position: absolute;
+    bottom: 0.5rem;
 
     font-size: 2.4rem;
     border-radius: 0.8rem;

@@ -9,8 +9,10 @@ export default function SignUp() {
 
     const navigate = useNavigate();
 
+    const [error, setError] = useState(null);
     const [formSignUp, setForm] = useState({
-        username: "",
+        name: "",
+        email: "",
         password: "",
         repeat_password: ""
     });
@@ -25,30 +27,34 @@ export default function SignUp() {
 
     const handleChangeInputValue = (e) => {
         setForm({ ...formSignUp, [e.target.name]: e.target.value });
+        setError('');
     };
 
     const handleSubmitSignUp = async (e) => {
         e.preventDefault();
 
         try {
-            if (!formSignUp.username || !formSignUp.password || !formSignUp.repeat_password) {
-                console.log("Please fill all the fields.");
+            if (!formSignUp.name || !formSignUp.email || !formSignUp.password || !formSignUp.repeat_password) {
+                setError("Please fill all the fields.");
                 return;
             }
 
             if (formSignUp.password !== formSignUp.repeat_password) {
-                console.log("The password must match.");
+                setError("The password must match.");
                 return;
             }
 
             const response = await api.post("/users", {
-                username: formSignUp.username.trim(),
+                name: formSignUp.name.trim(),
+                email: formSignUp.email.trim(),
                 password: formSignUp.password.trim(),
+
             });
 
             navigate("/sign-in");
         } catch (error) {
-            console.log(error.message);
+            setError(error.response.data.message);
+            return;
         }
     };
 
@@ -61,10 +67,16 @@ export default function SignUp() {
                     <Sc.InputArea>
                         <Sc.Input
                             type={'text'}
-                            name={"username"}
+                            name={"name"}
                             onChange={handleChangeInputValue}
-                            value={formSignUp.username}
-                            placeholder='Username' />
+                            value={formSignUp.name}
+                            placeholder='name' />
+                        <Sc.Input
+                            type={'email'}
+                            name={"email"}
+                            onChange={handleChangeInputValue}
+                            value={formSignUp.email}
+                            placeholder='email' />
                         <Sc.Input
                             type={'password'}
                             name={"password"}
@@ -78,6 +90,11 @@ export default function SignUp() {
                             value={formSignUp.repeat_password}
                             placeholder='repeat-password' />
                     </Sc.InputArea>
+                    {error &&
+                        <Sc.ErrorMessage>
+                            {error}
+                        </Sc.ErrorMessage>
+                    }
                     <Sc.Button>Cadastrar</Sc.Button>
                 </Sc.Form>
                 <Link to={"/sign-in"}>Já tem cadastro? Realizar login</Link>
